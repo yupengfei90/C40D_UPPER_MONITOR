@@ -344,6 +344,8 @@ Dim t_tail(1) As Byte   '帧尾
 Dim checksum As Integer
 Dim checksum2_4 As Integer
 Dim status As Long      '开关状态，因为采用了4块74HC595芯片级联，所以可同时控制32个开关
+                        '需要注意的是status无法反映第31位开关的状态，因为数据溢出
+Dim statusH As Byte     '储存第31位开关的状态
 Dim power As Byte
 
 
@@ -354,7 +356,7 @@ If BlowerRelayCtrlSW.Caption = "BlowerRelayCtrlSW" Then
     
     power = 30
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -369,7 +371,7 @@ Else
      
     power = 30
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -389,7 +391,7 @@ If CleanOverCur.Caption = "CleanOverCur" Then
      
     power = 0
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -404,7 +406,7 @@ Else
      
     power = 0
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -416,6 +418,8 @@ Else
 End If
 End Sub
 
+
+
 Private Sub DarkCurEn_Click()
 If DarkCurEn.Caption = "DarkCurEn" Then
     DarkCurEn.Caption = "CLOSE DarkCurEn"
@@ -423,7 +427,7 @@ If DarkCurEn.Caption = "DarkCurEn" Then
     
     power = 20
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -438,7 +442,7 @@ Else
      
     power = 20
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -482,7 +486,7 @@ If HIGDriveCurEn.Caption = "HIGDriveCurEn" Then
     
     power = 29
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -497,7 +501,7 @@ Else
      
     power = 29
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -513,10 +517,12 @@ Private Sub LowDriveCurEn_Click()
 If LowDriveCurEn.Caption = "LowDriveCurEn" Then
     LowDriveCurEn.Caption = "CLOSE LowDriveCurEn"
     LowDriveCurEn.BackColor = RGB(0, 255, 0)      '绿色表示开关打开
-    
-    power = 31
-    status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+
+'    power = 31
+'    status = status Or (1 * 2 ^ power)
+'因为2^31已经超出了LONG类型可以表示的最大整数范围，上句代码会引起数据溢出，所以这里做特别处理
+    statusH = &H80
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -529,9 +535,10 @@ Else
      LowDriveCurEn.Caption = "LowDriveCurEn"
      LowDriveCurEn.BackColor = RGB(222, 222, 222) '灰色表示开关关上
      
-    power = 31
-    status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+'    power = 31
+'    status = status And (Not 1 * 2 ^ power)
+    statusH = &H0
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -550,7 +557,7 @@ If SIGTrigHigEN0.Caption = "SIGTrigHigEN0" Then
     
     power = 24
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -565,7 +572,7 @@ Else
      
     power = 24
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -584,7 +591,7 @@ If SIGTrigHigEN1.Caption = "SIGTrigHigEN1" Then
     
     power = 23
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -599,7 +606,7 @@ Else
      
     power = 23
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -618,7 +625,7 @@ If SIGTrigHigEN2.Caption = "SIGTrigHigEN2" Then
     
     power = 21
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -633,7 +640,7 @@ Else
      
     power = 21
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -652,7 +659,7 @@ If SIGTrigHigEN3.Caption = "SIGTrigHigEN3" Then
     
     power = 22
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -667,7 +674,7 @@ Else
      
     power = 22
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -686,7 +693,7 @@ If SIGTrigLowEN0.Caption = "SIGTrigLowEN0" Then
     
     power = 28
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -701,7 +708,7 @@ Else
      
     power = 28
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -720,7 +727,7 @@ If SIGTrigLowEN1.Caption = "SIGTrigLowEN1" Then
     
     power = 27
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -735,7 +742,7 @@ Else
      
     power = 27
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -754,7 +761,7 @@ If SIGTrigLowEN2.Caption = "SIGTrigLowEN2" Then
     
     power = 26
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -769,7 +776,7 @@ Else
      
     power = 26
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -788,7 +795,7 @@ If SIGTrigLowEN3.Caption = "SIGTrigLowEN3" Then
     
     power = 25
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -803,7 +810,7 @@ Else
      
     power = 25
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -822,7 +829,7 @@ If SWSIGSensor0.Caption = "SWSIGSensor0" Then
     
     power = 7
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -837,7 +844,7 @@ Else
      
     power = 7
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -857,7 +864,7 @@ If SWSIGSensor1.Caption = "SWSIGSensor1" Then
      
     power = 6
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -873,7 +880,7 @@ Else
      
     power = 6
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -893,7 +900,7 @@ If SWSIGSensor2.Caption = "SWSIGSensor2" Then
      
     power = 16
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -909,7 +916,7 @@ Else
      
     power = 16
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -929,7 +936,7 @@ If SWSIGSensor3.Caption = "SWSIGSensor3" Then
      
     power = 19
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -945,7 +952,7 @@ Else
      
     power = 19
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -965,7 +972,7 @@ If SWSIGSensor4.Caption = "SWSIGSensor4" Then
      
     power = 4
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -980,7 +987,7 @@ Else
      
     power = 4
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1000,7 +1007,7 @@ If SWSIGSensor5.Caption = "SWSIGSensor5" Then
      
     power = 5
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1015,7 +1022,7 @@ Else
      
     power = 5
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1049,7 +1056,7 @@ If SWSIGSensor6.Caption = "SWSIGSensor6" Then
      
     power = 18
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1065,7 +1072,7 @@ Else
      
     power = 18
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1085,7 +1092,7 @@ If SWSIGSensor7.Caption = "SWSIGSensor7" Then
      
     power = 17
     status = status Or (1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)
@@ -1101,7 +1108,7 @@ Else
      
     power = 17
     status = status And (Not 1 * 2 ^ power)
-    t_frame(5) = CByte(status \ (2 ^ 24))
+    t_frame(5) = CByte(status \ (2 ^ 24)) Or statusH
     t_frame(6) = CByte((status \ (2 ^ 16)) And &HFF)
     t_frame(7) = CByte((status \ (2 ^ 8)) And &HFF)
     t_frame(8) = CByte(status And &HFF)

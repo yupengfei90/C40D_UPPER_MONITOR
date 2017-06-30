@@ -1166,7 +1166,7 @@ End Sub
 
 Private Sub SIG_Trig_Low_AD0_Click()
 t_frame(5) = &H6
-t_frame(6) = &H3
+t_frame(6) = &H0
 checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
@@ -1176,7 +1176,7 @@ End Sub
 
 Private Sub SIG_Trig_Low_AD1_Click()
 t_frame(5) = &H6
-t_frame(6) = &H1
+t_frame(6) = &H3
 checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
