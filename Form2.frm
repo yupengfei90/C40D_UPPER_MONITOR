@@ -593,7 +593,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 'form2 按键每个对应一帧指令，指令有固定的帧头帧尾，指令须遵照规定的帧格式才能被下位机正确解析
 Option Explicit
-Dim t_frame(32) As Byte '发送的命令的帧
+Dim t_frame(31) As Byte '发送的命令的帧
 Dim t_head(1) As Byte   '帧头
 Dim t_tail(1) As Byte   '帧尾
 
@@ -607,7 +607,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Blower_FB_AD_Click()
@@ -617,7 +617,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub DC_Motor_5V_AD_Click()
@@ -627,7 +627,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Form_Load()
@@ -648,8 +648,8 @@ t_frame(4) = &H2
 checksum2_4 = t_frame(2) + t_frame(3) + t_frame(4)
 '========下面注释的表示不能固化的部分，需要根据采集的AD做变动=============
 'checksum = t_frame(2) + t_frame(3) + t_frame(4) + t_frame(5) + t_frame(6)
-'t_frame(7) = checksum \ 256 + 1
-'t_frame(8) = checksum Mod 255
+'t_frame(7) = checksum \ 256
+'t_frame(8) = checksum Mod 256
 t_frame(9) = t_tail(0)
 t_frame(10) = t_tail(1)
 End Sub
@@ -661,7 +661,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub KL15_Vol_AD_Click()
@@ -671,7 +671,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub KL30_Cur_AD_Click()
@@ -681,7 +681,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub KL30_Vol_AD_Click()
@@ -691,7 +691,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_DC_motor_AD0_Click()
@@ -701,7 +701,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_DC_motor_AD1_Click()
@@ -711,7 +711,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_DC_motor_AD2_Click()
@@ -721,7 +721,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_DC_motor_AD3_Click()
@@ -731,7 +731,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_DC_motor_AD4_Click()
@@ -741,7 +741,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_Step_AD0_Click()
@@ -751,7 +751,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_Step_AD1_Click()
@@ -761,7 +761,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_Step_AD2_Click()
@@ -771,7 +771,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_Step_AD3_Click()
@@ -781,7 +781,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Location_Step_AD4_Click()
@@ -791,7 +791,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Motor_Step_Cur_AD_Click()
@@ -801,7 +801,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub P12V_VOL_AD_Click()
@@ -811,7 +811,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub POWER_Cur_AD_Click()
@@ -821,7 +821,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Power_Vol_AD_Click()
@@ -831,7 +831,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_Gather_AD0_Click()
@@ -841,7 +841,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD1_Click()
@@ -851,7 +851,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD2_Click()
@@ -861,7 +861,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD3_Click()
@@ -871,7 +871,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD4_Click()
@@ -881,7 +881,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD5_Click()
@@ -891,7 +891,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD6_Click()
@@ -901,7 +901,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD7_Click()
@@ -911,7 +911,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub REQ_GATHER_AD8_Click()
@@ -921,7 +921,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Reserved_AD0003_Click()
@@ -931,7 +931,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Reserved_AD0700_Click()
@@ -941,7 +941,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Reserved_AD0701_Click()
@@ -951,7 +951,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub Reserved_AD0703_Click()
@@ -961,7 +961,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD0_Click()
@@ -971,7 +971,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD1_Click()
@@ -981,7 +981,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD2_Click()
@@ -991,7 +991,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD3_Click()
@@ -1001,7 +1001,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD4_Click()
@@ -1011,7 +1011,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD5_Click()
@@ -1021,7 +1021,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD6_Click()
@@ -1031,7 +1031,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD7_Click()
@@ -1041,7 +1041,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD8_Click()
@@ -1051,7 +1051,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Sensor_AD9_Click()
@@ -1061,7 +1061,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD0_Click()
@@ -1071,7 +1071,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD1_Click()
@@ -1081,7 +1081,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD2_Click()
@@ -1091,7 +1091,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD3_Click()
@@ -1101,7 +1101,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD4_Click()
@@ -1111,7 +1111,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD5_Click()
@@ -1121,7 +1121,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD6_Click()
@@ -1131,7 +1131,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD7_Click()
@@ -1141,7 +1141,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_AD8_Click()
@@ -1151,7 +1151,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Hig_Cur_AD_Click()
@@ -1161,7 +1161,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD0_Click()
@@ -1171,7 +1171,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD1_Click()
@@ -1181,7 +1181,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD2_Click()
@@ -1191,7 +1191,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD3_Click()
@@ -1201,7 +1201,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD4_Click()
@@ -1211,7 +1211,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD5_Click()
@@ -1221,7 +1221,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD6_Click()
@@ -1231,7 +1231,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD7_Click()
@@ -1241,7 +1241,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_AD8_Click()
@@ -1251,7 +1251,7 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
 
 Private Sub SIG_Trig_Low_Cur_AD_Click()
@@ -1261,5 +1261,5 @@ checksum = checksum2_4 + t_frame(5) + t_frame(6)
 t_frame(7) = checksum \ 256
 t_frame(8) = checksum Mod 256
 Form1.MSComm1.Output = t_frame
-Form1.MSComm1.Output = vbCrLf
+
 End Sub
