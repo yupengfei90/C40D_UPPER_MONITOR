@@ -593,9 +593,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 'form2 按键每个对应一帧指令，指令有固定的帧头帧尾，指令须遵照规定的帧格式才能被下位机正确解析
 Option Explicit
-Dim t_frame(31) As Byte '发送的命令的帧
-Dim t_head(1) As Byte   '帧头
-Dim t_tail(1) As Byte   '帧尾
+Dim t_frame(31) As Byte
 
 Dim checksum As Integer
 Dim checksum2_4 As Integer
@@ -631,10 +629,6 @@ Form1.MSComm1.Output = t_frame
 End Sub
 
 Private Sub Form_Load()
-t_head(0) = &HFF    'PC上位机发送的固定帧头，两字节
-t_head(1) = &H55
-t_tail(0) = &HFF    'PC上位机发送的固定帧尾，两字节
-t_tail(1) = &HAA
 
 'AD类命令发送的部分固定格式
 t_frame(0) = t_head(0)

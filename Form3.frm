@@ -337,9 +337,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 'form3 开关控制界面
 Option Explicit
-Dim t_frame(31) As Byte '发送的命令的帧
-Dim t_head(1) As Byte   '帧头
-Dim t_tail(1) As Byte   '帧尾
+Dim t_frame(31) As Byte
 
 Dim checksum As Integer
 Dim checksum2_4 As Integer
@@ -455,10 +453,6 @@ End If
 End Sub
 
 Private Sub Form_Load()
-t_head(0) = &HFF    'PC上位机发送的固定帧头，两字节
-t_head(1) = &H55
-t_tail(0) = &HFF    'PC上位机发送的固定帧尾，两字节
-t_tail(1) = &HAA
 status = 0          '上电默认32个开关全部处于关闭状态
 '开关模块命令发送的部分固定格式
 t_frame(0) = t_head(0)
