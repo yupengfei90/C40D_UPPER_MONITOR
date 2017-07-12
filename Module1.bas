@@ -11,3 +11,19 @@ Public r_frame(31) As Byte '接收的命令的帧
 Public r_head(1) As Byte   '帧头
 Public r_tail(1) As Byte   '帧尾
 
+
+'延时50ms，期间可以进行任务切换
+Public IsTimeElaplse As Byte
+
+Public Sub Delay_50ms()
+Form1.Timer2.Enabled = False
+Form1.Timer2.Enabled = True
+Do
+    If IsTimeElaplse Then
+        IsTimeElaplse = 0
+        Exit Do
+    End If
+    DoEvents
+Loop
+End Sub
+

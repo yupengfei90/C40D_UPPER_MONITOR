@@ -73,11 +73,6 @@ Begin VB.Form Form4
       TabIndex        =   3
       Top             =   240
       Width           =   5175
-      Begin VB.Timer Timer1 
-         Interval        =   50
-         Left            =   3600
-         Top             =   840
-      End
       Begin VB.TextBox TextDefrost 
          Height          =   495
          Left            =   3360
@@ -200,7 +195,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Dim IsTimeElaplse As Byte
+
 Dim IsACActive As Byte
 Dim IsDEFActive As Byte
 
@@ -208,15 +203,7 @@ Dim IsDEFActive As Byte
 Private Sub AC_Click()
 IsACActive = Not IsACActive
 Call ButtonSend(&H1, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 If IsACActive Then
     AC.BackColor = RGB(0, 0, 255)
@@ -227,44 +214,20 @@ End Sub
 
 Private Sub BlowMinus_Click()
 Call ButtonSend(&H4, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub BlowPlus_Click()
 Call ButtonSend(&H8, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub DEF_Click()
 IsDEFActive = Not IsDEFActive
 Call ButtonSend(&H10, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 
 If IsDEFActive Then
@@ -276,22 +239,11 @@ End Sub
 
 Private Sub ExtCycle_Click()
 Call ButtonSend(&H40, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub Form_Load()
-IsTimeElaplse = 0
-Timer1.Enabled = False
-
 '获取之前设定的温度，模式，AC等作为初始值
 Form1.Text1.Text = Form1.Text1.Text + vbCrLf + "C40D手动测试界面打开" + vbCrLf
 Call RequestResponse
@@ -299,75 +251,37 @@ End Sub
 
 Private Sub InterCycle_Click()
 Call ButtonSend(&H20, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub MODE_Click()
 Call ButtonSend(&H0, &H2)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub OFF_Click()
 Call ButtonSend(&H0, &H4)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub TempMinus_Click()
 Call ButtonSend(&H80, &H0)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub TempPlus_Click()
 Call ButtonSend(&H0, &H1)
-Timer1.Enabled = False
-Timer1.Enabled = True
-Do
-    If IsTimeElaplse Then
-        IsTimeElaplse = 0
-        Exit Do
-    End If
-    DoEvents
-Loop
+Call Delay_50ms
 Call RequestResponse
 End Sub
 
 Private Sub ButtonSend(data0 As Byte, data1 As Byte)
+'C40D手动调试界面都是通过改变报文中的8字节数据中的data0,data1来改变空调控制器状态的
+'所以可以这样写
 Dim i As Byte
 t_frame(0) = t_head(0)
 t_frame(1) = t_head(1)
@@ -416,7 +330,5 @@ t_frame(10) = t_tail(1)
 Form1.MSComm1.Output = t_frame
 End Sub
 
-Private Sub Timer1_Timer()
-Timer1.Enabled = False
-IsTimeElaplse = 1
-End Sub
+
+
